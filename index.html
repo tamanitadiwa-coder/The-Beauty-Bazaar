@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Beauty Bazaar Cape Town</title>
+<meta name="description" content="Beauty Bazaar, 24 Plein Street, Cape Town. Nails, braids, locs, hair and makeup. Book an appointment.">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="icon" href="assets/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="top">
+  <nav class="nav" aria-label="Main">
+    <a class="navlogo" href="#home" aria-label="Beauty Bazaar home"><img src="assets/logo.jpg" alt="Beauty Bazaar" width="1042" height="302"></a>
+    <div class="links" id="links">
+      <a href="#home" data-v="home">Home</a>
+      <a href="#services" data-v="services">Services</a>
+      <a href="#team" data-v="team">Our Team</a>
+      <a href="#book" data-v="book">Book</a>
+      <a href="#contact" data-v="contact">Contact</a>
+    </div>
+    <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="links"><span></span><span></span></button>
+  </nav>
+</header>
+
+<main id="main">
+
+<!-- HOME -->
+<section class="view" id="v-home" data-view="home">
+  <div class="hero">
+    <div class="sparkles" aria-hidden="true"></div>
+    <figure class="sign">
+      <div class="sign-frame">
+        <img class="logo" src="assets/logo.jpg" alt="Beauty Bazaar" width="1042" height="302">
+        <span class="shimmer" aria-hidden="true"></span>
+        <span class="glints" aria-hidden="true"></span>
+      </div>
+      <img class="reflect" src="assets/logo.jpg" alt="" aria-hidden="true" width="1042" height="302">
+    </figure>
+    <p class="tag">Beauty appointments made simple.</p>
+    <a class="btn primary" href="#book">Book appointment</a>
+    <p class="addr-line">24 Plein Street, Cape Town</p>
+  </div>
+
+  <div class="band reveal">
+    <div class="head"><h2>Popular services</h2><a class="more" href="#services">All services</a></div>
+    <div class="pop" id="pop"></div>
+  </div>
+
+  <div class="band reveal">
+    <div class="head"><h2>Our beauty professionals</h2><a class="more" href="#team">Meet the team</a></div>
+    <div class="faces" id="faces"></div>
+  </div>
+
+  <div class="band reveal">
+    <div class="head"><h2>Recent work</h2></div>
+    <div class="reel" id="reel" tabindex="0" aria-label="Recent work"></div>
+  </div>
+
+  <div class="band reveal">
+    <div class="cta-card">
+      <h2>Book an appointment</h2>
+      <p>Choose your service, who you want to book with, and a time.</p>
+      <a class="btn primary" href="#book">Book now</a>
+    </div>
+  </div>
+
+  <div class="band reveal" id="home-contact"></div>
+</section>
+
+<!-- SERVICES -->
+<section class="view" id="v-services" data-view="services" hidden>
+  <div class="page-head"><h1>Services</h1><p>Prices are set by each professional. Ask for a quote when you book.</p></div>
+  <div class="tabs" id="svcTabs" role="tablist" aria-label="Service categories"></div>
+  <div class="svc-list" id="svcList"></div>
+</section>
+
+<!-- TEAM -->
+<section class="view" id="v-team" data-view="team" hidden>
+  <div class="page-head"><h1>Our Team</h1><p>Independent professionals working at 24 Plein Street.</p></div>
+  <div class="team" id="team"></div>
+  <p class="also" id="also"></p>
+</section>
+
+<!-- BOOK -->
+<section class="view" id="v-book" data-view="book" hidden>
+  <div class="page-head"><h1>Book an appointment</h1></div>
+  <ol class="steps" id="steps" aria-label="Booking steps"></ol>
+  <div class="booker" id="booker" aria-live="polite"></div>
+</section>
+
+<!-- CONTACT -->
+<section class="view" id="v-contact" data-view="contact" hidden>
+  <div class="page-head"><h1>Contact</h1></div>
+  <div id="contactFull"></div>
+</section>
+
+</main>
+
+<a class="mbook" id="mbook" href="#book">Book appointment</a>
+
+<footer class="foot">
+  <img src="assets/logo.jpg" alt="Beauty Bazaar" width="1042" height="302" class="footlogo">
+  <p>24 Plein Street, Cape Town City Centre, 8000</p>
+  <p class="credit">© <span id="yr"></span> Beauty Bazaar · Website by <a href="https://tamany.tech">TAMANY.TECH</a></p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
