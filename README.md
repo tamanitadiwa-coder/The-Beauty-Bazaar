@@ -22,9 +22,9 @@ Everything the salon may want to change is at the top of `app.js` in `CONFIG`:
 The booking flow runs in six steps: service, professional, date, time, details, confirm.
 On the last step, the customer's request goes straight to the professional:
 
-- by WhatsApp, with the message filled in, for professionals with a WhatsApp number
-- by Instagram message (copied, then pasted) for those without one
-- by phone call to the salon for "Any available professional", until `salon.whatsapp` is set
+- by WhatsApp to the professional, when they have a `wa` number
+- by WhatsApp to the salon (`salon.whatsapp`), naming the professional, for everyone else and for "Any available"
+- by phone call to the salon only if `salon.whatsapp` is empty
 
 The site never says an appointment is booked. It tells the customer they're booked once the professional confirms.
 Dates and times come from salon hours, not from each professional's live diary. For live availability and instant

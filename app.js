@@ -12,7 +12,7 @@ const CONFIG = {
     landmark: 'Same block as The Goldman, Supreme Finance and Ackermans',
     maps: 'https://www.google.com/maps/search/?api=1&query=24+Plein+Street+Cape+Town+8000',
     phone: '27732113167',        // salon line from public listings
-    whatsapp: null,              // add the salon WhatsApp number (e.g. '2773xxxxxxx') to let "Any available professional" requests go by WhatsApp
+    whatsapp: '27732113167',     // CONFIRM: salon WhatsApp. Used for anyone without their own `wa` number and for "Any available"
     email: null                  // add an email address if the salon has one
   },
   // 0 = Sunday ... 6 = Saturday. null = closed
@@ -188,7 +188,7 @@ $('#team').innerHTML = CONFIG.team.map(p => `<article class="pro">
   <div class="pic${p.photo ? '' : ' mono'}">${p.photo ? `<img src="${esc(p.photo)}" alt="Work by ${esc(p.name)}" loading="lazy">` : `<span class="initial">${esc(p.name[0])}</span>`}</div>
   <div class="body"><h3>${esc(p.name)}</h3><p class="spec">${esc(p.spec)}</p><p class="biz">${esc(p.biz)}</p>
   <ul>${proSvcs(p.id).map(s => `<li>${esc(s.name)}</li>`).join('')}</ul>
-  <div class="acts"><a class="btn small primary" href="#book" data-pro="${p.id}">Book with ${esc(p.name)}</a>${p.ig ? `<a class="btn small ghost" href="https://www.instagram.com/${esc(p.ig)}/" target="_blank" rel="noopener">Instagram</a>` : ''}${p.web ? `<a class="btn small ghost" href="${esc(p.web)}" target="_blank" rel="noopener">Website</a>` : ''}</div></div></article>`).join('');
+  <div class="acts"><a class="btn small primary" href="#book" data-pro="${p.id}">Book with ${esc(p.name)}</a>${(p.wa || CONFIG.salon.whatsapp) ? `<a class="btn small ghost" href="https://wa.me/${p.wa || CONFIG.salon.whatsapp}?text=${encodeURIComponent(p.wa ? `Hi ${p.name}, I'd like to make a booking.` : `Hi Beauty Bazaar, I'd like to make a booking with ${p.name}.`)}" target="_blank" rel="noopener">WhatsApp</a>` : ''}${p.ig ? `<a class="btn small ghost" href="https://www.instagram.com/${esc(p.ig)}/" target="_blank" rel="noopener">Instagram</a>` : ''}${p.web ? `<a class="btn small ghost" href="${esc(p.web)}" target="_blank" rel="noopener">Website</a>` : ''}</div></div></article>`).join('');
 $('#also').textContent = 'Also working at Beauty Bazaar: ' + CONFIG.alsoInHouse;
 
 /* ---------- booking ---------- */
@@ -290,7 +290,7 @@ function renderBook() {
     const s = SV(B.svc), p = proFor(), via = channel();
     el.innerHTML = `<h2 class="q">Check your appointment</h2><p class="qsub">${via.lead}</p>
       <div class="sum"><h3>Your appointment</h3>${summaryDL()}
-      <p class="how">${via.how}</p></div>
+      <p class="how">${via.how}</p>${via.ig}</div>
       <div class="navrow"><button class="btn" data-act="back">Back</button>${via.btn}</div>`;
   }
   // focus heading for screen readers / keyboard
@@ -304,25 +304,30 @@ function summaryDL() {
 }
 function message() {
   const s = SV(B.svc), p = proFor();
-  return [`Hi ${p ? p.name : 'Beauty Bazaar'}, I'd like to book an appointment.`, '', `Service: ${s.name}`, `Date: ${longDate(B.date)}`, `Time: ${B.time}`, `Name: ${B.name}`, `Phone: ${B.phone}`, B.email ? `Email: ${B.email}` : '', '', 'Booked from the Beauty Bazaar website. Please confirm if this time works.'].filter((l, i, a) => l !== '' || (a[i - 1] !== '' && i)).join('\n');
+  const direct = p && p.wa;
+  return [direct ? `Hi ${p.name}, I'd like to book an appointment.` : `Hi Beauty Bazaar, I'd like to book an appointment.`, '', `Service: ${s.name}`, `Professional: ${p ? p.name : 'Any available'}`, `Date: ${longDate(B.date)}`, `Time: ${B.time}`, `Name: ${B.name}`, `Phone: ${B.phone}`, B.email ? `Email: ${B.email}` : '', '', 'Booked from the Beauty Bazaar website. Please confirm if this time works.'].filter((l, i, a) => l !== '' || (a[i - 1] !== '' && i)).join('\n');
 }
 function channel() {
   const p = proFor(), S = CONFIG.salon, msg = encodeURIComponent(message());
-  if (p && p.wa) return { kind: 'wa', who: p.name, lead: `Your request goes to ${esc(p.name)} on WhatsApp.`, how: `Tap the button to open WhatsApp with this message to ${esc(p.name)} (${fmtPhone(p.wa)}), then press send. You're booked once ${esc(p.name)} confirms.`, btn: `<a class="btn primary" data-act="send" href="https://wa.me/${p.wa}?text=${msg}" target="_blank" rel="noopener">Send request on WhatsApp</a>` };
-  if (p && p.ig) return { kind: 'ig', who: p.name, lead: `${esc(p.name)} takes bookings by Instagram message.`, how: `Tap the button to copy your booking and open ${esc(p.name)}'s Instagram. Paste it into a message. You're booked once ${esc(p.name)} confirms.`, btn: `<a class="btn primary" data-act="send" data-copy="1" href="https://ig.me/m/${esc(p.ig)}" target="_blank" rel="noopener">Copy and open Instagram</a>` };
-  if (S.whatsapp) return { kind: 'wa', who: 'the salon', lead: 'Your request goes to the salon on WhatsApp.', how: `Tap the button to open WhatsApp with this message, then press send. You're booked once the salon confirms.`, btn: `<a class="btn primary" data-act="send" href="https://wa.me/${S.whatsapp}?text=${msg}" target="_blank" rel="noopener">Send request on WhatsApp</a>` };
-  return { kind: 'call', who: 'the salon', lead: p ? `Bookings with ${esc(p.name)} are made through the salon.` : 'Bookings with any available professional are made by phone.', how: `Call the salon on ${fmtPhone(S.phone)} and read out these details. You're booked once the salon confirms.`, btn: `<a class="btn primary" data-act="send" href="tel:+${S.phone}">Call ${fmtPhone(S.phone)}</a>` };
+  const num = (p && p.wa) || S.whatsapp;
+  const toPro = !!(p && p.wa);
+  const who = toPro ? p.name : 'the salon';
+  const ig = p && p.ig ? `<p class="how" style="margin-top:8px">Prefer Instagram? <a href="https://ig.me/m/${esc(p.ig)}" target="_blank" rel="noopener" data-act="ig">Message ${esc(p.name)} on Instagram</a>.</p>` : '';
+  if (num) return { kind: 'wa', who, ig,
+    lead: toPro ? `Your request goes to ${esc(p.name)} on WhatsApp.` : p ? `Your request goes to the salon on WhatsApp, for ${esc(p.name)}.` : 'Your request goes to the salon on WhatsApp.',
+    how: `Tap the button to open WhatsApp with this message${toPro ? ' to ' + esc(p.name) : ''} (${fmtPhone(num)}), then press send. You're booked once ${toPro ? esc(p.name) : 'the salon'} confirms.`,
+    btn: `<a class="btn primary" data-act="send" href="https://wa.me/${num}?text=${msg}" target="_blank" rel="noopener">Send request on WhatsApp</a>` };
+  return { kind: 'call', who: 'the salon', ig, lead: 'Bookings are made by phone.', how: `Call the salon on ${fmtPhone(S.phone)} and read out these details. You're booked once the salon confirms.`, btn: `<a class="btn primary" data-act="send" href="tel:+${S.phone}">Call ${fmtPhone(S.phone)}</a>` };
 }
 function renderDone(el) {
   const c = B.sentVia;
-  const title = c.kind === 'call' ? 'Call to finish booking' : c.kind === 'wa' ? 'Press send in WhatsApp' : 'Paste and send on Instagram';
+  const title = c.kind === 'call' ? 'Call to finish booking' : 'Press send in WhatsApp';
   const line = c.kind === 'wa' ? `WhatsApp has opened with your request to ${esc(c.who)}. Press send there. You're booked once ${esc(c.who)} confirms.`
-    : c.kind === 'ig' ? `Your booking was copied. Paste it into your Instagram message to ${esc(c.who)}. You're booked once ${esc(c.who)} confirms.`
     : `Call ${fmtPhone(CONFIG.salon.phone)} to book. You're booked once the salon confirms.`;
   $('#steps').innerHTML = '';
   el.innerHTML = `<div class="done-mark">${ICON.check}</div><h2 class="q">${title}</h2><p class="qsub">${line}</p>
     <div class="sum"><h3>Your appointment request</h3>${summaryDL()}<p class="how">Address: ${esc(CONFIG.salon.address)}</p></div>
-    <div class="navrow" style="position:static;background:none;border:0;padding:22px 0 0;backdrop-filter:none">${channel().btn.replace('Send request on WhatsApp', 'Open WhatsApp again').replace('Copy and open Instagram', 'Copy again')}<button class="btn" data-act="new">New booking</button></div>`;
+    <div class="navrow" style="position:static;background:none;border:0;padding:22px 0 0;backdrop-filter:none">${channel().btn.replace('Send request on WhatsApp', 'Open WhatsApp again')}<button class="btn" data-act="new">New booking</button></div>`;
   const q = $('.q', el); q.tabIndex = -1; q.focus({ preventScroll: true });
 }
 
@@ -366,6 +371,7 @@ $('#booker').addEventListener('click', async e => {
   if (a === 'next') next();
   if (a === 'back') back();
   if (a === 'new') { reset(); renderBook(); }
+  if (a === 'ig') return;
   if (a === 'send') {
     if (t.dataset.copy) { try { await navigator.clipboard.writeText(message()); } catch (_) { /* clipboard blocked: message is still shown in the summary */ } }
     B.sentVia = channel(); B.sent = true;
