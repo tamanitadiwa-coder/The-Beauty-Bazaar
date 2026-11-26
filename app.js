@@ -27,9 +27,13 @@ const CONFIG = {
     { id: 'eunice',  name: 'Eunice',  biz: 'Eunic ebraids',         spec: 'Braids · salon or home', wa: '27633451913', ig: 'eunic.ebraids' },
     { id: 'sara',    name: 'Sara',    biz: 'Braiding by Sara',      spec: 'Braids & bridal makeup', wa: '27685804591', ig: 'braidingbysara', web: 'https://braidingbysara.co.za/' },
     { id: 'tinashe', name: 'Tinashe', biz: 'Tinashe Magical Dreads', spec: 'Locs',                 ig: 'tinashemagicaldreads' },
-    { id: 'lauret',  name: 'Lauret',  biz: 'Lauret Beauty',         spec: 'Makeup',                wa: '27611505140' }
+    { id: 'lauret',  name: 'Lauret',  biz: 'Lauret Beauty',         spec: 'Makeup',                wa: '27611505140' },
+    { id: 'ursula',  name: 'Ursula',  biz: 'Beauty Bazaar',         spec: 'Cuts & styling' },
+    // DEMO: placeholder names for the client preview. Replace with real people (or delete) before launch.
+    { id: 'naledi',  name: 'Naledi',  biz: 'Beauty Bazaar',         spec: 'Weaves & wigs',         demo: true },
+    { id: 'amara',   name: 'Amara',   biz: 'Beauty Bazaar',         spec: 'Brows & threading',     demo: true }
   ],
-  alsoInHouse: 'Patricia (braids), Tania (braids), Mireille (braids) and Ursula (cuts and styling). Ask for them at the front.',
+  alsoInHouse: 'Patricia (braids), Tania (braids) and Mireille (braids). Ask for them at the front.',
   cats: [
     { id: 'nails',  name: 'Nails',  note: 'Gel, acrylic, French tips and nail art.', img: 'assets/work/laura-french.jpg' },
     { id: 'braids', name: 'Braids', note: 'Knotless, box braids and cornrows.' },
@@ -50,11 +54,11 @@ const CONFIG = {
     { id: 'cornrows',  cat: 'braids', name: 'Cornrows',           desc: 'Straight-back or styled.',              mins: null, price: null, team: ['grace'] },
     { id: 'retwist',   cat: 'locs',   name: 'Loc retwist',        desc: 'Maintenance and retwist.',              mins: null, price: null, team: ['tinashe'] },
     { id: 'crochet',   cat: 'locs',   name: 'Crochet locs',       desc: 'Starter or repair with crochet.',       mins: null, price: null, team: ['tinashe'] },
-    { id: 'weave',     cat: 'hair',   name: 'Weave or wig install', desc: 'Sew-in, frontal or wig.',             mins: null, price: null, team: [] },
-    { id: 'cut',       cat: 'hair',   name: 'Cut and blowout',    desc: 'Wash, cut and blow-dry.',               mins: null, price: null, team: [] },
+    { id: 'weave',     cat: 'hair',   name: 'Weave or wig install', desc: 'Sew-in, frontal or wig.',             mins: null, price: null, team: ['naledi', 'ursula'] },
+    { id: 'cut',       cat: 'hair',   name: 'Cut and blowout',    desc: 'Wash, cut and blow-dry.',               mins: null, price: null, team: ['ursula'] },
     { id: 'glam',      cat: 'makeup', name: 'Soft glam makeup',   desc: 'For events and nights out.',            mins: null, price: null, team: ['lauret', 'sara'] },
     { id: 'bridal',    cat: 'makeup', name: 'Bridal makeup',      desc: 'For your wedding day.',                 mins: null, price: null, team: ['sara', 'lauret'] },
-    { id: 'threading', cat: 'brows',  name: 'Brow threading',     desc: 'Shape and tidy.',                       mins: null, price: null, team: [] }
+    { id: 'threading', cat: 'brows',  name: 'Brow threading',     desc: 'Shape and tidy.',                       mins: null, price: null, team: ['amara'] }
   ],
   popular: ['nails', 'braids', 'locs', 'makeup'],
   work: [
@@ -307,7 +311,7 @@ function channel() {
   if (p && p.wa) return { kind: 'wa', who: p.name, lead: `Your request goes to ${esc(p.name)} on WhatsApp.`, how: `Tap the button to open WhatsApp with this message to ${esc(p.name)} (${fmtPhone(p.wa)}), then press send. You're booked once ${esc(p.name)} confirms.`, btn: `<a class="btn primary" data-act="send" href="https://wa.me/${p.wa}?text=${msg}" target="_blank" rel="noopener">Send request on WhatsApp</a>` };
   if (p && p.ig) return { kind: 'ig', who: p.name, lead: `${esc(p.name)} takes bookings by Instagram message.`, how: `Tap the button to copy your booking and open ${esc(p.name)}'s Instagram. Paste it into a message. You're booked once ${esc(p.name)} confirms.`, btn: `<a class="btn primary" data-act="send" data-copy="1" href="https://ig.me/m/${esc(p.ig)}" target="_blank" rel="noopener">Copy and open Instagram</a>` };
   if (S.whatsapp) return { kind: 'wa', who: 'the salon', lead: 'Your request goes to the salon on WhatsApp.', how: `Tap the button to open WhatsApp with this message, then press send. You're booked once the salon confirms.`, btn: `<a class="btn primary" data-act="send" href="https://wa.me/${S.whatsapp}?text=${msg}" target="_blank" rel="noopener">Send request on WhatsApp</a>` };
-  return { kind: 'call', who: 'the salon', lead: 'Bookings with any available professional are made by phone.', how: `Call the salon on ${fmtPhone(S.phone)} and read out these details. You're booked once the salon confirms.`, btn: `<a class="btn primary" data-act="send" href="tel:+${S.phone}">Call ${fmtPhone(S.phone)}</a>` };
+  return { kind: 'call', who: 'the salon', lead: p ? `Bookings with ${esc(p.name)} are made through the salon.` : 'Bookings with any available professional are made by phone.', how: `Call the salon on ${fmtPhone(S.phone)} and read out these details. You're booked once the salon confirms.`, btn: `<a class="btn primary" data-act="send" href="tel:+${S.phone}">Call ${fmtPhone(S.phone)}</a>` };
 }
 function renderDone(el) {
   const c = B.sentVia;
