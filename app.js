@@ -39,10 +39,10 @@ const CONFIG = {
     { id: 'brows',  name: 'Brows',  note: 'Threading.' }
   ],
   services: [
-    { id: 'gel',       cat: 'nails',  name: 'Gel nails',          desc: 'Gel polish or gel overlay.',            mins: null, price: null, team: ['laura', 'jenn'] },
-    { id: 'acrylic',   cat: 'nails',  name: 'Acrylic set',        desc: 'Full set with tips, any length.',       mins: null, price: null, team: ['laura'] },
-    { id: 'french',    cat: 'nails',  name: 'French tips',        desc: 'Classic or coloured French.',           mins: null, price: null, team: ['laura', 'jenn'] },
-    { id: 'nailart',   cat: 'nails',  name: 'Nail art',           desc: 'Designs, crystals and 3D details.',     mins: null, price: null, team: ['laura', 'jenn'] },
+    { id: 'gel',       cat: 'nails',  name: 'Gel nails',          desc: 'Gel polish or gel overlay.',            img: 'assets/work/laura-pink.jpg', mins: null, price: null, team: ['laura', 'jenn'] },
+    { id: 'acrylic',   cat: 'nails',  name: 'Acrylic set',        desc: 'Full set with tips, any length.',       img: 'assets/work/laura-red.jpg', mins: null, price: null, team: ['laura'] },
+    { id: 'french',    cat: 'nails',  name: 'French tips',        desc: 'Classic or coloured French.',           img: 'assets/work/laura-french.jpg', mins: null, price: null, team: ['laura', 'jenn'] },
+    { id: 'nailart',   cat: 'nails',  name: 'Nail art',           desc: 'Designs, crystals and 3D details.',     img: 'assets/work/jenn-dots.jpg', mins: null, price: null, team: ['laura', 'jenn'] },
     { id: 'gelish',    cat: 'nails',  name: 'Gelish manicure',    desc: 'Long-lasting gel colour on natural nails.', mins: null, price: null, team: ['ness'] },
     { id: 'pedicure',  cat: 'nails',  name: 'Pedicure',           desc: 'Soak, shape and polish.',               mins: null, price: null, team: ['laura', 'ness'] },
     { id: 'knotless',  cat: 'braids', name: 'Knotless braids',    desc: 'Any size and length.',                  mins: null, price: null, team: ['grace', 'eunice', 'sara'] },
@@ -86,8 +86,11 @@ const ICON = {
   makeup: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="11" y="16" width="10" height="12" rx="1.5"/><path d="M12 16V10l8-5v11"/></svg>',
   brows: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M4 18c6-7 14-8 24-4"/><path d="M8 22c5-3 11-3 16 0"/></svg>',
   nails: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 28V12a4 4 0 0 1 8 0v16"/><path d="M13 12a3 3 0 0 1 6 0v3h-6z"/></svg>',
+  pedicure: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M10 4c0 8-2 14-2 18 0 4 3 6 8 6h6c2 0 3-1 3-3s-2-3-5-3h-3c-2 0-3-2-3-5V4"/><ellipse cx="24" cy="25" rx="1.6" ry="1.2" fill="currentColor"/></svg>',
+  gelish: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="13" y="4" width="6" height="8" rx="1"/><path d="M11 12h10l2 4v10a2 2 0 0 1-2 2H11a2 2 0 0 1-2-2V16z"/><path d="M12 18h8" opacity=".6"/></svg>',
   check: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'
 };
+const thumb = s => `<span class="thumb" aria-hidden="true">${s.img ? `<img src="${esc(s.img)}" alt="" loading="lazy">` : (ICON[s.id] || ICON[s.cat] || '')}</span>`;
 const avatar = (p, cls = 'av') => `<span class="${cls}">${p.photo ? `<img src="${esc(p.photo)}" alt="" loading="lazy">` : esc(p.name[0])}</span>`;
 
 /* ---------- routing ---------- */
@@ -98,6 +101,7 @@ function route() {
   $$('.view').forEach(s => { s.hidden = s.dataset.view !== v; });
   $$('#links a').forEach(a => a.dataset.v === v ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'));
   $('#mbook').classList.toggle('hide', v === 'book');
+  document.body.classList.toggle('booking', v === 'book');
   links.classList.remove('open'); burger.setAttribute('aria-expanded', 'false');
   if (v === 'book') renderBook();
   window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
@@ -169,7 +173,7 @@ function renderServices() {
   $('#svcTabs').innerHTML = [['all', 'All'], ...CONFIG.cats.map(c => [c.id, c.name])].map(([id, n]) => `<button class="tab" role="tab" data-tab="${id}" aria-selected="${svcTab === id}">${n}</button>`).join('');
   $('#svcList').innerHTML = CONFIG.cats.filter(c => svcTab === 'all' || c.id === svcTab).map(c => `
     <div class="cat"><div class="cat-head"><div class="ci">${c.img ? `<img src="${esc(c.img)}" alt="" loading="lazy">` : `<span style="width:40%">${ICON[c.id] || ''}</span>`}</div><div><h2>${esc(c.name)}</h2><p>${esc(c.note)}</p></div></div>
-    ${CONFIG.services.filter(s => s.cat === c.id).map(s => `<div class="svc"><div><h3>${esc(s.name)}</h3><p>${esc(s.desc)}</p></div><a class="btn small ghost" href="#book" data-svc="${s.id}">Book</a><div class="meta">${mins(s)} · ${price(s)}${s.team.length ? ' · ' + s.team.map(id => T(id).name).join(', ') : ''}</div></div>`).join('')}
+    ${CONFIG.services.filter(s => s.cat === c.id).map(s => `<div class="svc">${thumb(s)}<div><h3>${esc(s.name)}</h3><p>${esc(s.desc)}</p></div><a class="btn small ghost" href="#book" data-svc="${s.id}">Book</a><div class="meta">${mins(s)} · ${price(s)}${s.team.length ? ' · ' + s.team.map(id => T(id).name).join(', ') : ''}</div></div>`).join('')}
     </div>`).join('');
 }
 $('#svcTabs').addEventListener('click', e => { const b = e.target.closest('[data-tab]'); if (b) { svcTab = b.dataset.tab; renderServices(); } });
@@ -235,7 +239,7 @@ function renderBook() {
     if (B.cat !== 'all' && !cats.some(c => c.id === B.cat)) B.cat = 'all';
     el.innerHTML = `<h2 class="q">What would you like to book?</h2><p class="qsub">Choose your service.</p>${chosen()}
       ${cats.length > 1 ? `<div class="cats">${[['all', 'All'], ...cats.map(c => [c.id, c.name])].map(([id, n]) => `<button class="tab" data-bcat="${id}" aria-selected="${B.cat === id}">${n}</button>`).join('')}</div>` : ''}
-      ${pool.filter(s => B.cat === 'all' || s.cat === B.cat).map(s => `<button class="opt" data-svc="${s.id}" aria-pressed="${B.svc === s.id}"><span><b>${esc(s.name)}</b><small>${mins(s)} · ${price(s)}</small></span><span class="sel">${B.svc === s.id ? 'Selected' : 'Select'}</span></button>`).join('')}
+      ${pool.filter(s => B.cat === 'all' || s.cat === B.cat).map(s => `<button class="opt svc-opt" data-svc="${s.id}" aria-pressed="${B.svc === s.id}">${thumb(s)}<span><b>${esc(s.name)}</b><small>${mins(s)} · ${price(s)}</small></span><span class="sel">${B.svc === s.id ? 'Selected' : 'Select'}</span></button>`).join('')}
       ${nav(true, !!B.svc)}`;
   }
   if (B.step === 2) {
