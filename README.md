@@ -30,6 +30,6 @@ The site never says an appointment is booked. It tells the customer they're book
 Dates and times come from salon hours, not from each professional's live diary. For live availability and instant
 confirmation, connect a booking system (for example Fresha, Booksy or a calendar API).
 
-`assets/logo.png` is the original Beauty Bazaar logo image and must not be edited.
+`assets/logo-original.png` is the original Beauty Bazaar logo and must not be edited. `assets/logo.png` is the same artwork with its black background made transparent (so it blends into any dark background on every browser). It looks identical on black.
 
 Website by [TAMANY.TECH](https://tamany.tech).
